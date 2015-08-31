@@ -254,7 +254,7 @@ add_subsystem(const struct ovsrec_subsystem *ovsrec_subsys)
     result->name = strdup(ovsrec_subsys->name);
     result->marked = false;
     result->valid = false;
-    result->parent_subsystem = NULL;  /* HALON_TODO: find parent subsystem */
+    result->parent_subsystem = NULL;  /* OPS_TODO: find parent subsystem */
     shash_init(&result->subsystem_psus);
 
     /* since this is a new subsystem, load all of the hardware description
@@ -286,10 +286,10 @@ add_subsystem(const struct ovsrec_subsystem *ovsrec_subsys)
         return(NULL);
     }
 
-    /* HALON_TODO: The thermal info has a polling period, but when we
-       HALON_TODO: have multiple subsystems, that could be tricky to
-       HALON_TODO: implement if there are different polling periods.
-       HALON_TODO: For now, hardwire the polling period to 5 seconds. */
+    /* OPS_TODO: The thermal info has a polling period, but when we
+       OPS_TODO: have multiple subsystems, that could be tricky to
+       OPS_TODO: implement if there are different polling periods.
+       OPS_TODO: For now, hardwire the polling period to 5 seconds. */
 
     /* prepare to add psus to db */
     psu_idx = 0;
@@ -402,7 +402,7 @@ powerd_init(const char *remote)
     /* create connection to db */
     idl = ovsdb_idl_create(remote, &ovsrec_idl_class, false, true);
     idl_seqno = ovsdb_idl_get_seqno(idl);
-    ovsdb_idl_set_lock(idl, "halon_powerd");
+    ovsdb_idl_set_lock(idl, "ops_powerd");
     ovsdb_idl_verify_write_only(idl);
 
     /* Register for daemon table. */
@@ -543,7 +543,7 @@ powerd_unmark_subsystems(void)
  * Function that will remove the internal entry in the locl_subsystem hash
  * for any subsystem that is no longer in OVSDB.
  *
- * @todo HALON_TODO: need to remove subsystem yaml data
+ * @todo OPS_TODO: need to remove subsystem yaml data
  ***************************************************************************/
 static void
 powerd_remove_unmarked_subsystems(void)
@@ -574,7 +574,7 @@ powerd_remove_unmarked_subsystems(void)
             /* delete the subsystem dictionary entry */
             shash_delete(&subsystem_data, node);
 
-            /* HALON_TODO: need to remove subsystem yaml data */
+            /* OPS_TODO: need to remove subsystem yaml data */
         }
     }
 }
@@ -620,7 +620,7 @@ powerd_run(void)
     if (ovsdb_idl_is_lock_contended(idl)) {
         static struct vlog_rate_limit rl = VLOG_RATE_LIMIT_INIT(1, 1);
 
-        VLOG_ERR_RL(&rl, "another halon-powerd process is running, "
+        VLOG_ERR_RL(&rl, "another ops-powerd process is running, "
                     "disabling this process until it goes away");
 
         return;
@@ -635,7 +635,7 @@ powerd_run(void)
 
     daemonize_complete();
     vlog_enable_async();
-    VLOG_INFO_ONCE("%s (Halon powerd) %s", program_name, VERSION);
+    VLOG_INFO_ONCE("%s (OpenSwitch powerd) %s", program_name, VERSION);
 }
 
 /* initialize periodic poll of psus */
@@ -654,7 +654,7 @@ powerd_unixctl_dump(struct unixctl_conn *conn, int argc OVS_UNUSED,
 }
 
 
-static unixctl_cb_func halon_powerd_exit;
+static unixctl_cb_func ops_powerd_exit;
 
 static char *parse_options(int argc, char *argv[], char **unixctl_path);
 OVS_NO_RETURN static void usage(void);
@@ -682,7 +682,7 @@ main(int argc, char *argv[])
     if (retval) {
         exit(EXIT_FAILURE);
     }
-    unixctl_command_register("exit", "", 0, 0, halon_powerd_exit, &exiting);
+    unixctl_command_register("exit", "", 0, 0, ops_powerd_exit, &exiting);
 
     powerd_init(remote);
     free(remote);
@@ -791,7 +791,7 @@ parse_options(int argc, char *argv[], char **unixctl_pathp)
 static void
 usage(void)
 {
-    printf("%s: Halon powerd daemon\n"
+    printf("%s: OpenSwitch powerd daemon\n"
            "usage: %s [OPTIONS] [DATABASE]\n"
            "where DATABASE is a socket on which ovsdb-server is listening\n"
            "      (default: \"unix:%s/db.sock\").\n",
@@ -807,7 +807,7 @@ usage(void)
 }
 
 static void
-halon_powerd_exit(struct unixctl_conn *conn, int argc OVS_UNUSED,
+ops_powerd_exit(struct unixctl_conn *conn, int argc OVS_UNUSED,
                   const char *argv[] OVS_UNUSED, void *exiting_)
 {
     bool *exiting = exiting_;
