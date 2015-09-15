@@ -16,7 +16,7 @@
  */
 
 /************************************************************************//**
- * @defgroup powerd Power Supply Daemon
+ * @defgroup ops-powerd Power Supply Daemon
  * This module is the platform daemon that processess and manages power
  * supplies for all subsystems in the switch that have manageable
  * modular power supplies.
@@ -39,7 +39,7 @@
  *
  * Command line options:
  *
- *     usage: powerd [OPTIONS] [DATABASE]
+ *     usage: ops-powerd [OPTIONS] [DATABASE]
  *     where DATABASE is a socket on which ovsdb-server is listening
  *           (default: "unix:/var/run/openvswitch/db.sock").
  *
@@ -56,14 +56,14 @@
  *     Daemon options:
  *          --detach                run in background as daemon
  *          --no-chdir              do not chdir to '/'
- *          --pidfile[=FILE]        create pidfile (default: /var/run/openvswitch/powerd.pid)
+ *          --pidfile[=FILE]        create pidfile (default: /var/run/openvswitch/ops-powerd.pid)
  *          --overwrite-pidfile     with --pidfile, start even if already running
  *
  *     Logging options:
  *          -vSPEC, --verbose=SPEC   set logging levels
  *          -v, --verbose            set maximum verbosity level
  *          --log-file[=FILE]        enable logging to specified FILE
- *                                  (default: /var/log/openvswitch/powerd.log)
+ *                                  (default: /var/log/openvswitch/ops-powerd.log)
  *          --syslog-target=HOST:PORT  also send syslog msgs to HOST:PORT via UDP
  *
  *     Other options:
@@ -74,30 +74,30 @@
  *
  * ovs-apptcl options:
  *
- *      Support dump: ovs-appctl -t powerd powerd/dump
+ *      Support dump: ovs-appctl -t ops-powerd ops-powerd/dump
  *
  *
  * OVSDB elements usage
  *
- *     Creation: The following rows/cols are created by powerd
+ *     Creation: The following rows/cols are created by ops-powerd
  *               rows in Power_supply table
  *               Power_supply:name
  *               Power_supply:status
  *
- *     Written: The following cols are written by powerd
+ *     Written: The following cols are written by ops-powerd
  *              Power_supply:status
  *              subsystem:power_supplies
- *              daemon["powerd"]:cur_hw
+ *              daemon["ops-powerd"]:cur_hw
  *
- *     Read: The following cols are read by powerd
+ *     Read: The following cols are read by ops-powerd
  *           subsystem:name
  *           subsystem:hw_desc_dir
  *
  * Linux Files:
  *
- *     The following files are written by powerd
- *           /var/run/openvswitch/powerd.pid: Process ID for the powerd daemon
- *           /var/run/openvswitch/powerd.<pid>.ctl: unixctl socket for the powerd daemon
+ *     The following files are written by ops-powerd
+ *           /var/run/openvswitch/ops-powerd.pid: Process ID for the ops-powerd daemon
+ *           /var/run/openvswitch/ops-powerd.<pid>.ctl: unixctl socket for the ops-powerd daemon
  *
  * @}
  ***************************************************************************/
@@ -110,11 +110,11 @@
 #include "shash.h"
 #include "config-yaml.h"
 
-VLOG_DEFINE_THIS_MODULE(powerd);
+VLOG_DEFINE_THIS_MODULE(ops_powerd);
 
 COVERAGE_DEFINE(powerd_reconfigure);
 
-#define NAME_IN_DAEMON_TABLE "powerd" /*!< Name of daemon */
+#define NAME_IN_DAEMON_TABLE "ops-powerd" /*!< Name of daemon */
 
 #define POLLING_PERIOD  5     /*!< polling period in seconds */
 #define MSEC_PER_SEC    1000  /*!< number of miliseconds in a second */
@@ -182,4 +182,4 @@ enum bit_op_result {
 };
 
 #endif /* _POWERD_H_ */
-/** @} end of group powerd */
+/** @} end of group ops-powerd */

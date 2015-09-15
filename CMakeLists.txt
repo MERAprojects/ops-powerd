@@ -15,7 +15,7 @@
 
 cmake_minimum_required (VERSION 2.8)
 
-set (POWERD powerd)
+set (POWERD ops-powerd)
 project (${POWERD})
 set (SRC_DIR src)
 set (INCL_DIR include)
@@ -32,16 +32,16 @@ include_directories (${PROJECT_BINARY_DIR} ${PROJECT_SOURCE_DIR}/${INCL_DIR}
                      ${OVSCOMMON_INCLUDE_DIRS}
 )
 
-# Sources to build powerd
+# Sources to build ops-powerd
 set (SOURCES ${SRC_DIR}/powerd.c)
 
-# Rules to build powerd
+# Rules to build ops-powerd
 add_executable (${POWERD} ${SOURCES})
 
 target_link_libraries (${POWERD} ${OVSCOMMON_LIBRARIES} ${OVSDB_LIBRARIES}
                        ${CONFIG_YAML_LIBRARIES}
                        -lpthread -lrt)
 
-# Rules to install powerd binary in rootfs
+# Rules to install ops-powerd binary in rootfs
 install(TARGETS ${POWERD}
         RUNTIME DESTINATION bin)

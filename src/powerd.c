@@ -17,7 +17,7 @@
  */
 
 /************************************************************************//**
- * @ingroup powerd
+ * @ingroup ops-powerd
  *
  * @file
  * Source file for the platform Power daemon
@@ -424,9 +424,9 @@ powerd_init(const char *remote)
     ovsdb_idl_add_column(idl, &ovsrec_subsystem_col_hw_desc_dir);
     ovsdb_idl_omit_alert(idl, &ovsrec_subsystem_col_hw_desc_dir);
 
-    unixctl_command_register("powerd/dump", "", 0, 0,
+    unixctl_command_register("ops-powerd/dump", "", 0, 0,
                              powerd_unixctl_dump, NULL);
-    unixctl_command_register("powerd/test", "psu state", 2, 2,
+    unixctl_command_register("ops-powerd/test", "psu state", 2, 2,
                              powerd_unixctl_test, NULL);
 }
 
