@@ -3,21 +3,23 @@ ops-powerd
 
 What is ops-powerd?
 -------------------
-ops-powerd is a daemon that detects and reports power supply status.
+The ops-powerd daemon detects and reports power supply status.
 
 What is the structure of the repository?
 ----------------------------------------
-* src/ contains the source files for ops-powerd
-* include/ contains the header files for ops-powerd
+* The src/ area contains the source files for ops-powerd.
+* The include/ area contains the header files for ops-powerd.
 
 What is the license?
 --------------------
 The ops-powerd source may be used under the terms of the Apache 2.0 license. For more details refer to [COPYING](https://git.openswitch.net/cgit/openswitch/ops-powerd/tree/COPYING).
 
 What other documents are available?
-===================================
-For a high level design of ops-powerd, refer to [DESIGN](https://www.openswitch.net/documents/dev/ops-powerd/DESIGN).
-For answers to common questions, read [FAQ](https://git.openswitch.net/cgit/openswitch/ops-powerd/tree/FAQ.md).
-For the current list of contributors and maintainers, refer to [AUTHORS](https://git.openswitch.net/cgit/openswitch/ops-powerd/tree/AUTHORS.md).
+-----------------------------------
+- For a high level design of ops-powerd, see its [DESIGN](/documents/dev/ops-powerd/DESIGN).
 
-For general information about OpenSwitch project refer to [http://www.openswitch.net](http://www.openswitch.net).
+- For answers to common questions, see that [FAQ](/documents/user/openswitch_faq).
+
+- For the current list of contributors and maintainers, see the [list of authors](https://git.openswitch.net/cgit/openswitch/ops-powerd/tree/AUTHORS).
+
+- For general information about the OpenSwitch project, see http://www.openswitch.net.
