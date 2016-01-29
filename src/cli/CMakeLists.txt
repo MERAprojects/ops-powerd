@@ -14,35 +14,37 @@
 
 cmake_minimum_required (VERSION 2.8)
 
-set (POWERD ops-powerd)
 project (${POWERD})
-set (SRC_DIR src)
-set (INCL_DIR include)
 
+set (INCL_DIR ${CMAKE_SOURCE_DIR}/include)
+set (LIBPOWERCLI power_cli)
+
+# This option is passed  by the build system
+OPTION( CPU_LITTLE_ENDIAN "Specifies CPU architecture is Little-Endian" OFF )
+
+# Define compile flags
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=gnu99 -Wall -Werror")
+
+add_definitions(-DHAVE_CONFIG_H -DHAVE_SOCKLEN_T -DSYSCONFDIR=\"/etc/\")
 
 # Rules to locate needed libraries
 include(FindPkgConfig)
 pkg_check_modules(CONFIG_YAML REQUIRED ops-config-yaml)
 pkg_check_modules(OVSCOMMON REQUIRED libovscommon)
 pkg_check_modules(OVSDB REQUIRED libovsdb)
+pkg_check_modules(OPSCLI REQUIRED ops-cli)
 
-include_directories (${PROJECT_BINARY_DIR} ${PROJECT_SOURCE_DIR}/${INCL_DIR}
+include_directories (${INCL_DIR}
+                     ${PROJECT_SOURCE_DIR}
                      ${OVSCOMMON_INCLUDE_DIRS}
-)
+                     ${OPSCLI_INCLUDE_DIRS}
+                    )
 
-# Sources to build ops-powerd
-set (SOURCES ${SRC_DIR}/powerd.c)
+# CLI libraries source files
+set (SOURCES_CLI ${PROJECT_SOURCE_DIR}/powersupply_vty.c)
 
-# Rules to build ops-powerd
-add_executable (${POWERD} ${SOURCES})
+add_library (${LIBPOWERCLI} SHARED ${SOURCES_CLI})
 
-target_link_libraries (${POWERD} ${OVSCOMMON_LIBRARIES} ${OVSDB_LIBRARIES}
-                       ${CONFIG_YAML_LIBRARIES}
-                       -lpthread -lrt)
-
-add_subdirectory(src/cli)
-
-# Rules to install ops-powerd binary in rootfs
-install(TARGETS ${POWERD}
-        RUNTIME DESTINATION bin)
+# Installation
+install(TARGETS ${LIBPOWERCLI}
+        LIBRARY DESTINATION lib/cli/plugins)
