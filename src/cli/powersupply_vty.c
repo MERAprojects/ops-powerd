@@ -155,13 +155,31 @@ DEFUN (cli_platform_show_psu,
 }
 
 /*
+ * Function : powerd_ovsdb_init
+ * Responsibility : Initialise the powerd Related OVSDB table
+ */
+void powerd_ovsdb_init()
+{
+    /* Add powersupply table */
+    ovsdb_idl_add_table(idl, &ovsrec_table_power_supply);
+
+    ovsdb_idl_add_column(idl, &ovsrec_power_supply_col_name);
+    ovsdb_idl_add_column(idl, &ovsrec_power_supply_col_status);
+    ovsdb_idl_add_column(idl, &ovsrec_power_supply_col_other_config);
+    ovsdb_idl_add_column(idl, &ovsrec_power_supply_col_external_ids);
+
+    /* Add powersupply column into subsystem. */
+    ovsdb_idl_add_column(idl, &ovsrec_subsystem_col_power_supplies);
+}
+
+/*
  * Function : cli_pre_init
  * Resposibility : Initialize powersupply cli node.
  * To load ops-powerd cli shared libraries at runtime,this function is required.
  */
 void cli_pre_init(void)
 {
-        //ops-powerd doesn't have any context level cli nodes.
+    powerd_ovsdb_init();
 }
 
 /*

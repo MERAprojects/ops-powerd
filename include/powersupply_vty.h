@@ -31,6 +31,8 @@
 
 int cli_system_get_psu();
 
-void powersupply_vty_init();
+void cli_pre_init(void);
+void cli_post_init(void);
+void powerd_ovsdb_init(void);
 
 #endif //_POWERSUPPLY_VTY_H
