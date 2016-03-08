@@ -33,12 +33,11 @@
 #include "memory.h"
 #include "openvswitch/vlog.h"
 #include "openswitch-idl.h"
+#include "vtysh/utils/system_vtysh_utils.h"
 
 VLOG_DEFINE_THIS_MODULE(vtysh_powersupply_cli);
 
 extern struct ovsdb_idl *idl;
-
-extern char *psu_state_string[];
 
 /*
  * Function        : compare_psu
@@ -65,7 +64,7 @@ compare_psu(const void* a,const void* b)
  *      status  : Pointer to status string
  * Return      : Pointer to formatted status string
  */
-static char*
+const static char*
 format_psu_string(char* status)
 {
     if (!status)
@@ -167,6 +166,8 @@ void powerd_ovsdb_init()
     ovsdb_idl_add_column(idl, &ovsrec_power_supply_col_status);
     ovsdb_idl_add_column(idl, &ovsrec_power_supply_col_other_config);
     ovsdb_idl_add_column(idl, &ovsrec_power_supply_col_external_ids);
+
+    ovsdb_idl_add_table(idl, &ovsrec_table_subsystem);
 
     /* Add powersupply column into subsystem. */
     ovsdb_idl_add_column(idl, &ovsrec_subsystem_col_power_supplies);
