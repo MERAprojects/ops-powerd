@@ -55,6 +55,7 @@
 #include "coverage.h"
 #include "config-yaml.h"
 #include "powerd.h"
+#include "eventlog.h"
 
 static struct ovsdb_idl *idl;
 
@@ -308,6 +309,8 @@ add_subsystem(const struct ovsrec_subsystem *ovsrec_subsys)
     txn = ovsdb_idl_txn_create(idl);
 
     VLOG_DBG("There are %d psus in subsystem %s", psu_count, ovsrec_subsys->name);
+    log_event("POWER_COUNT", EV_KV("count", "%d", psu_count),
+        EV_KV("subsystem", "%s", ovsrec_subsys->name));
 
     for (idx = 0; idx < psu_count; idx++) {
         const YamlPsu *psu = yaml_get_psu(yaml_handle, ovsrec_subsys->name, idx);
@@ -393,6 +396,8 @@ powerd_unixctl_test(struct unixctl_conn *conn, int argc OVS_UNUSED,
 static void
 powerd_init(const char *remote)
 {
+    int retval;
+
     /* initialize subsystems */
     init_subsystems();
 
@@ -428,6 +433,11 @@ powerd_init(const char *remote)
                              powerd_unixctl_dump, NULL);
     unixctl_command_register("ops-powerd/test", "psu state", 2, 2,
                              powerd_unixctl_test, NULL);
+
+    retval = event_log_init("POWER");
+    if(retval < 0) {
+        VLOG_ERR("Event log initialization failed for POWER");
+    }
 }
 
 /* pre-exit shutdown processing */

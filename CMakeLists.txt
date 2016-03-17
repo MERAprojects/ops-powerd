@@ -39,7 +39,7 @@ add_executable (${POWERD} ${SOURCES})
 
 target_link_libraries (${POWERD} ${OVSCOMMON_LIBRARIES} ${OVSDB_LIBRARIES}
                        ${CONFIG_YAML_LIBRARIES}
-                       -lpthread -lrt)
+                       -lpthread -lrt -lsupportability)
 
 add_subdirectory(src/cli)
 
