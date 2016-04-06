@@ -139,6 +139,7 @@ class PlatformPSUTests(OpsVsiTest):
         return True
 
 
+@pytest.mark.skipif(True, reason="Disabling old tests")
 class Test_psu:
 
     def setup(self):
