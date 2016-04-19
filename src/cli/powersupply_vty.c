@@ -71,13 +71,17 @@ format_psu_string(char* status)
         return NULL;
 
     if (0 == strcmp(status,OVSREC_POWER_SUPPLY_STATUS_FAULT_ABSENT))
-        return psu_state_string[POWER_SUPPLY_STATUS_FAULT_ABSENT];
+        return POWER_SUPPLY_FAULT_ABSENT;
     else if (0 == strcmp(status,OVSREC_POWER_SUPPLY_STATUS_FAULT_INPUT))
-        return psu_state_string[POWER_SUPPLY_STATUS_FAULT_INPUT];
+        return POWER_SUPPLY_FAULT_INPUT;
     else if (0 == strcmp(status,OVSREC_POWER_SUPPLY_STATUS_FAULT_OUTPUT))
-        return psu_state_string[POWER_SUPPLY_STATUS_FAULT_OUTPUT];
+        return POWER_SUPPLY_FAULT_OUTPUT;
+    else if (0 == strcmp(status,OVSREC_POWER_SUPPLY_STATUS_OK))
+        return POWER_SUPPLY_OK;
+    else if (0 == strcmp(status,OVSREC_POWER_SUPPLY_STATUS_UNKNOWN))
+        return POWER_SUPPLY_UNKNOWN;
 
-    return status;
+    return NULL;
 }
 
 int

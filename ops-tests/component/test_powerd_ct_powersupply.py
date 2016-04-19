@@ -17,6 +17,7 @@
 # Software Foundation, Inc., 59 Temple Place - Suite 330, BoTeston, MA
 # 02111-1307, USA.
 
+import time
 
 TOPOLOGY = """
 # +-------+
@@ -41,18 +42,22 @@ def init_psu_table(sw1):
                 ' power_supplies=@psu1 -- --id=@psu1 create '
                 ' Power_supply name=Psu_base status=ok'.format(uuid),
                 shell='bash')
+            time.sleep(2)
             sw1('ovs-vsctl -- set Subsystem {} '
                 ' power_supplies=@psu1 -- --id=@psu1 create '
                 ' Power_supply name=Psu_base1 '
                 ' status=fault_input'.format(uuid), shell='bash')
+            time.sleep(2)
             sw1('ovs-vsctl -- set Subsystem {} '
                 ' power_supplies=@psu1 -- --id=@psu1 create '
                 ' Power_supply name=Psu_base2 '
                 ' status=fault_outputput'.format(uuid), shell='bash')
+            time.sleep(2)
             sw1('ovs-vsctl -- set Subsystem {} '
                 ' power_supplies=@psu1 -- --id=@psu1 create '
                 ' Power_supply name=Psu_base3 '
                 ' status=fault_absent'.format(uuid), shell='bash')
+            time.sleep(2)
             sw1('ovs-vsctl -- set Subsystem {} '
                 ' power_supplies=@psu1 -- --id=@psu1 create '
                 ' Power_supply name=Psu_base4 '
@@ -66,7 +71,7 @@ def show_system_psu(sw1):  # noqa
     lines = output.split('\n')
     for line in lines:
         if 'Psu_base' in line:
-            if 'ok' in line:
+            if 'OK' in line:
                 system_psu_config_present = True
                 break
             else:
