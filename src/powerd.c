@@ -129,28 +129,10 @@ lookup_psu(const char *name)
 static enum bit_op_result
 get_bool_op(const char *subsystem_name, const char *psu_name, const i2c_bit_op *psu_op)
 {
-    i2c_op op;
-    i2c_op *cmds[2];
-    unsigned char byte = 0;
-    const YamlDevice *device;
+    uint32_t value;
     int rc;
 
-    cmds[0] = &op;
-    cmds[1] = NULL;
-
-    /* NOTE: There is an assumption here that this is a single byte read. */
-    op.direction = READ;
-    op.device = psu_op->device;
-    op.byte_count = 1;
-    op.set_register = false;
-    op.register_address = psu_op->register_address;
-    op.data = &byte;
-
-    op.negative_polarity = false;
-
-    device = yaml_find_device(yaml_handle, subsystem_name, psu_op->device);
-
-    rc = i2c_execute(yaml_handle, subsystem_name, device, cmds);
+    rc = i2c_reg_read(yaml_handle, subsystem_name, psu_op, &value);
 
     if (rc != 0) {
         VLOG_WARN("subsystem %s: unable to read byte for psu %s status (%d)",
@@ -158,9 +140,7 @@ get_bool_op(const char *subsystem_name, const char *psu_name, const i2c_bit_op *
         return(BIT_OP_FAIL);
     }
 
-    byte &= psu_op->bit_mask;
-
-    if (byte == psu_op->bit_mask) {
+    if (value == psu_op->bit_mask) {
         if (psu_op->negative_polarity) {
             return(BIT_OP_STATUS_BAD);
         } else {
