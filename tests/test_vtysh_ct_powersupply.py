@@ -21,6 +21,7 @@ from time import sleep
 from opsvsi.docker import *
 from opsvsi.opsvsitest import *
 
+import pytest
 
 class PlatformPSUTests(OpsVsiTest):
 
@@ -138,8 +139,7 @@ class PlatformPSUTests(OpsVsiTest):
             'Test to verify \'show system power-supply\' command - FAILED!'
         return True
 
-
-@pytest.mark.skipif(True, reason="Disabling old tests")
+@pytest.mark.skipif(True, reason="Failing due to script issues, needs refactoring")
 class Test_psu:
 
     def setup(self):
