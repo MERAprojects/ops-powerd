@@ -67,6 +67,7 @@ Main loop pseudo-code
            read PSU presence and status
            if change
               update status
+        update status LED
   check for appctl
   wait for IDL or appctl input
 ```

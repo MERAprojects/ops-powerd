@@ -151,6 +151,7 @@ struct locl_subsystem {
     char *name;             /*!< name identifier of the subsystem */
     bool marked;            /*!< flag for calculating "in use" status */
     bool valid;             /*!< flag to know if this is a valid subsys */
+    enum psustatus status;  /*!< current power supply status */
     struct locl_subsystem *parent_subsystem; /*!< pointer to parent (if any) */
     struct shash subsystem_psus;  /*!< power supplies in this subsystem */
 };

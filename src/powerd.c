@@ -178,6 +178,68 @@ powerd_read_psu(struct locl_psu *psu)
     }
 }
 
+static void
+powerd_set_psuleds(struct locl_subsystem *subsystem)
+{
+    const YamlPsuInfo *psu_info;
+    struct locl_psu *psu;
+    struct shash_node *psu_node;
+    enum psustatus status = PSU_STATUS_OK;
+    unsigned char ledval ;
+    int rc = 0;
+
+    psu_info = yaml_get_psu_info(yaml_handle, subsystem->name);
+    if (psu_info == NULL) {
+        VLOG_DBG("subsystem %s has no psu info", subsystem->name);
+        return;
+    }
+    if (psu_info->psu_led == NULL)
+        return;
+
+    SHASH_FOR_EACH(psu_node, &subsystem->subsystem_psus) {
+        psu = (struct locl_psu *)psu_node->data;
+        switch(psu->status) {
+        case PSU_STATUS_OK:
+        case PSU_STATUS_UNKNOWN:
+        case PSU_STATUS_OVERRIDE_NONE:
+        case PSU_STATUS_FAULT_ABSENT:
+            /* Ignore absent PSUs and OK status */
+            break;
+        case PSU_STATUS_FAULT_INPUT:
+        case PSU_STATUS_FAULT_OUTPUT:
+            status = psu->status;
+            break;
+        }
+    }
+
+    if (subsystem->status != status) {
+        subsystem->status = status;
+        ledval = psu_info->psu_led_values.off;
+        switch(status) {
+        case PSU_STATUS_OK:
+            ledval = psu_info->psu_led_values.good;
+            break;
+        case PSU_STATUS_FAULT_INPUT:
+        case PSU_STATUS_FAULT_OUTPUT:
+        case PSU_STATUS_FAULT_ABSENT:
+            ledval = psu_info->psu_led_values.fault;
+            break;
+        case PSU_STATUS_UNKNOWN:
+        case PSU_STATUS_OVERRIDE_NONE:
+            ledval = psu_info->psu_led_values.off;
+            break;
+        }
+
+        rc = i2c_reg_write(yaml_handle, subsystem->name,
+                           psu_info->psu_led, ledval);
+        if (rc) {
+            VLOG_DBG("Unable to set subsystem %s psu status LED",
+                     subsystem->name);
+        }
+    }
+}
+
+
 /************************************************************************//**
  * Function that creates a new locl_subsystem structure when a new
  *    subsystem is found in ovsdb, reads the psu status for each power
@@ -223,6 +285,7 @@ add_subsystem(const struct ovsrec_subsystem *ovsrec_subsys)
     result->name = strdup(ovsrec_subsys->name);
     result->marked = false;
     result->valid = false;
+    result->status = PSU_STATUS_UNKNOWN;
     result->parent_subsystem = NULL;  /* OPS_TODO: find parent subsystem */
     shash_init(&result->subsystem_psus);
 
@@ -566,7 +629,7 @@ powerd_reconfigure(struct ovsdb_idl *idl)
 
     COVERAGE_INC(powerd_reconfigure);
 
-    if (new_idl_seqno == idl_seqno){
+    if (new_idl_seqno == idl_seqno) {
         return;
     }
 
@@ -582,6 +645,7 @@ powerd_reconfigure(struct ovsdb_idl *idl)
         if (subsystem == NULL) {
             continue;
         }
+        powerd_set_psuleds(subsystem);
         subsystem->marked = true;
     }
 
