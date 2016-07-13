@@ -89,6 +89,10 @@ psu_string_to_status(const char *string)
 {
     unsigned int idx;
 
+    if (string == NULL) {
+        return(PSU_STATUS_UNKNOWN);
+    }
+
     if (strcmp(string, "none") == 0) {
         return(PSU_STATUS_OVERRIDE_NONE);
     }
@@ -488,7 +492,7 @@ powerd_run__(void)
 
         /* calculate and set status */
         status = psu_status_to_string(psu->status);
-        if (strcmp(status, cfg->status) != 0) {
+        if (psu_string_to_status(cfg->status) != (psu->status)) {
             ovsrec_power_supply_set_status(cfg, status);
             change = true;
         }
