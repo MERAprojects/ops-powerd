@@ -140,19 +140,7 @@ get_bool_op(const char *subsystem_name, const char *psu_name, const i2c_bit_op *
         return(BIT_OP_FAIL);
     }
 
-    if (value == psu_op->bit_mask) {
-        if (psu_op->negative_polarity) {
-            return(BIT_OP_STATUS_BAD);
-        } else {
-            return(BIT_OP_STATUS_OK);
-        }
-    } else {
-        if (psu_op->negative_polarity) {
-            return(BIT_OP_STATUS_OK);
-        } else {
-            return(BIT_OP_STATUS_BAD);
-        }
-    }
+    return (value == psu_op->bit_mask) ? BIT_OP_STATUS_OK : BIT_OP_STATUS_BAD;
 }
 
 static void
